@@ -1,0 +1,38 @@
+import requests
+
+def get_weather_by_zip(zip_code, api_key):
+    base_url = "http://api.openweathermap.org/data/2.5/weather"
+    params = {
+        "zip": f"{zip_code},us",  # Assuming US ZIP code, change country code if needed
+        "appid": api_key,
+        "units": "metric"  # You can change the units to "imperial" for Fahrenheit
+    }
+
+    try:
+        response = requests.get(base_url, params=params)
+        data = response.json()
+
+        if response.status_code == 200:
+            return data
+        else:
+            print(f"Error: {data['message']}")
+            return None
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error: {e}")
+        return None
+
+# Replace 'YOUR_API_KEY' with your actual API key from OpenWeatherMap
+api_key = 'YOUR_API_KEY'
+zip_code = '90210'  # Replace with the ZIP code you want to get weather data for
+
+weather_data = get_weather_by_zip(zip_code, api_key)
+if weather_data:
+    print("Weather Data:")
+    print(f"Weather: {weather_data['weather'][0]['main']}")
+    print(f"Description: {weather_data['weather'][0]['description']}")
+    print(f"Temperature: {weather_data['main']['temp']}°C")
+    print(f"Humidity: {weather_data['main']['humidity']}%")
+    print(f"Wind Speed: {weather_data['wind']['speed']} m/s")
+else:
+    print("Failed to retrieve weather data.")
